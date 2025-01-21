@@ -1,0 +1,18 @@
+openai-whisper
+mistralai
+pandas==2.2.3
+requests-html==0.10.0
+Python-IO==0.3
+numpy==1.23.5
+torch==2.5.1
+scikit-learn==1.5.2
+accelerate==1.1.1
+datasets==3.1.0
+tokenizers==0.20.3
+langchain==0.3.7
+langchain_community==0.3.7
+langchain_chroma==0.1.4
+langchain-huggingface==0.1.2
+transformers
+sentence-transformers
+-e .

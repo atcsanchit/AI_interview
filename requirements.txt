@@ -17,4 +17,5 @@ transformers
 sentence-transformers
 fastapi
 python-multipart
+langchain_mistralai
 -e .

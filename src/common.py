@@ -12,13 +12,13 @@ def calculate_score(list_of_audio, qa_map):
         scores = []
         threshold = 40
         for audio_path in list_of_audio:
-            index = int(audio_path.split(".")[0])
+            index = int(audio_path.split(".")[0][-1])
             if index > 5:
                  continue
-            directory_path = os.path.join("artifacts","uploaded_audio")
+            # directory_path = os.path.join("artifacts","uploaded_audio")
             audio_to_text = AudioToText()
             audio_to_text.load_whisper_model()
-            file_path = os.path.join(directory_path, audio_path)
+            file_path = audio_path
             audio_output = audio_to_text.get_response(filepath=file_path)
             candidate_response = audio_output["text"]
             prediction = PredictionMistral()

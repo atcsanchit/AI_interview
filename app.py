@@ -191,5 +191,4 @@ def serve_recording(filename):
     return send_from_directory(candidate_audio_folder, filename)
 
 
-if __name__ == '__main__':
-    app.run(debug=True)
+

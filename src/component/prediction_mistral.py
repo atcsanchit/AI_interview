@@ -54,7 +54,7 @@ class PredictionMistral:
             raise CustomException(e,sys)
         
 
-if __name__ == "__main__":
-    prediction = PredictionMistral()
-    prediction.load_model()
-    prediction.predict_score(answer="xuzC++ is a programming language used to create software. It's an object-oriented language that gives programmers more control over memory and system resources. C++ is often used to create large-scale applications, such as operating systems, video games, and databases.",text=" This was the fastest programming language. One of the fastest is it is an oops based programming language and it is basically used to develop very fast systems such as data bases, operating systems, games.")
+# if __name__ == "__main__":
+#     prediction = PredictionMistral()
+#     prediction.load_model()
+#     prediction.predict_score(answer="xuzC++ is a programming language used to create software. It's an object-oriented language that gives programmers more control over memory and system resources. C++ is often used to create large-scale applications, such as operating systems, video games, and databases.",text=" This was the fastest programming language. One of the fastest is it is an oops based programming language and it is basically used to develop very fast systems such as data bases, operating systems, games.")

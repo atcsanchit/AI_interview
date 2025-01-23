@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Interview</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .question { margin: 20px 0; font-size: 1.5em; }
+        .controls { margin: 20px 0; }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+        .answer {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+        .recording-status { color: #666; margin: 10px 0; }
+        #loader {
+        font-size: 1.5em;
+        color: #333;
+        margin: 20px 0;
+        display: none;
+    }
+    </style>
+</head>
+<body>
+    <h1>AI Interview</h1>
+    
+
+    <div class="question" id="question">{{ question }}</div>
+    <div class="answer" id="answer">{{ qa_data }}</div>
+    <div class="recording-status" id="recordingStatus"></div>
+    <div class="controls">
+        <button id="recordBtn">Start Recording</button>
+        <button id="nextBtn" disabled>Next Question</button>
+        <button id="submitBtn" disabled >Submit All</button>
+        <div id="loader" style="display: none;">Loading...</div>
+    </div>
+
+    <script>
+        let mediaRecorder;
+        let audioChunks = [];
+        const questionDiv = document.getElementById('question');
+        const answerDiv = document.getElementById('answer');
+        const recordBtn = document.getElementById('recordBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const recordingStatus = document.getElementById('recordingStatus');
+
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+
+                mediaRecorder.addEventListener('dataavailable', event => {
+                    audioChunks.push(event.data);
+                });
+
+                mediaRecorder.addEventListener('stop', () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    nextBtn.disabled = false;
+                    submitBtn.disabled = false;
+                    recordBtn.textContent = 'Start Recording';
+                    recordingStatus.textContent = 'Recording completed';
+                    window.latestRecording = audioBlob;
+                });
+
+                mediaRecorder.start();
+                recordBtn.textContent = 'Stop Recording';
+                recordingStatus.textContent = 'Recording in progress...';
+                nextBtn.disabled = true;
+                submitBtn.disabled = true;
+            } catch (err) {
+                console.error('Error accessing microphone:', err);
+                alert('Unable to access microphone. Please ensure it is connected and permitted.');
+            }
+        }
+async function sendRecording(isNext) {
+    loader.style.display = 'block'; // Corrected the typo here
+  
+    if (!window.latestRecording) return;
+
+    const formData = new FormData();
+    formData.append(
+        isNext ? 'recording' : 'final_recording',
+        new File([window.latestRecording], 'recording.wav', { type: 'audio/wav' })
+    );
+
+    try {
+        const response = await fetch(isNext ? '/next' : '/submit', {
+            method: 'POST',
+            body: formData,
+        });
+
+        const data = await response.json();
+        console.log(data);
+        if (data.error) {
+            throw new Error(data.error);
+        }
+
+        if (isNext && data.question) {
+            questionDiv.textContent = data.question;
+            answerDiv.textContent = data.answer;
+            nextBtn.disabled = true;
+            submitBtn.disabled = true;
+            window.latestRecording = null;
+            recordingStatus.textContent = '';
+        } else if (!isNext) {
+            if (data.message) {
+                alert('Interview completed successfully!');
+                
+                questionDiv.style.display = 'none';
+                recordBtn.style.display = 'none';
+                nextBtn.style.display = 'none';
+                submitBtn.style.display = 'none';
+                recordingStatus.style.display = 'none';
+
+                answerDiv.innerHTML = `<strong style="font-size: 2em;">Result: ${data.message}</strong>`;
+                answerDiv.style.display = 'block';
+            }
+        }
+    } catch (err) {
+        console.error('Error sending recording:', err);
+        alert('Error submitting recording. Please try again.');
+    } finally {
+        loader.style.display = 'none'; // Ensure loader is hidden even if there's an error
+    }
+}
+
+
+        recordBtn.addEventListener('click', () => {
+            if (mediaRecorder?.state === 'recording') {
+                mediaRecorder.stop();
+            } else {
+                startRecording();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => sendRecording(true));
+        submitBtn.addEventListener('click', () => sendRecording(false));
+    </script>
+</body>
+</html>

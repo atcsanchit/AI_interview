@@ -14,7 +14,7 @@ app = FastAPI()
 async def xyz():
     return {"hard coding is good":"but not cool!"}
 
-@app.post("/upload")
+@app.post("/submit")
 async def abc(file: UploadFile = File(...)):
 
     save_dir = Path("artifacts/uploaded_audio")
@@ -28,7 +28,7 @@ async def abc(file: UploadFile = File(...)):
     audio_to_text = AudioToText()
     audio_to_text.load_whisper_model()
     output = audio_to_text.get_response(filepath=file_path)
-    return {"result": output}
+    return {"result": output["text"]}
 
 @app.get("/test")
 async def random(name:str):

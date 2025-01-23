@@ -3,7 +3,6 @@ mistralai
 pandas==2.2.3
 requests-html==0.10.0
 Python-IO==0.3
-numpy==1.23.5
 torch==2.5.1
 scikit-learn==1.5.2
 accelerate==1.1.1

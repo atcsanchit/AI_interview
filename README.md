@@ -39,6 +39,15 @@ Follow these steps to set up the project:
    pip install -r requirements.txt
    ```
 
+5. **Set up environment variables**:
+
+   Create a `.env` file in the project root directory and add the following variables:
+
+   ```ini
+   MISTRAL_API_KEY=your_mistral_api_key_here  # Get the API key from the Mistral official website
+   PORT=3000
+   ```
+
 ## Usage
 
 To start the application, run the following command:
@@ -53,6 +62,7 @@ Once the application is running, open your web browser and navigate to the provi
 
 - `wsgi.py`: The entry point for running the application.
 - `requirements.txt`: Lists the Python dependencies required for the project.
+- `.env`: Contains environment variables for configuration.
 - Other files and directories contain the implementation of various components of the AI Interview system.
 
 ## Contributing
